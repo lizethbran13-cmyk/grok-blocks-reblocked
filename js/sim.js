@@ -113,10 +113,25 @@ Sim.carry = function (list) {
   (list || []).forEach((c) => { const e = spawnAnimal(c.sp, W.truck.x, W.truck.z, { st: 'cargo', cargo: true, caseAnimal: !!c.caseAnimal }); W.truck.cargo.push(e.id); });
 };
 Sim.cargoList = function () { if (!W.truck) return []; return W.truck.cargo.map((id) => W.ents.find((e) => e.id === id)).filter(Boolean).map((e) => ({ sp: e.sp, caseAnimal: !!e.caseAnimal })); };
+function snapTruckClear(tr) {
+  if (!W.M || !tr) return;
+  const h0 = W.M.h(tr.x, tr.z);
+  if (W.M.can(tr.x, tr.z, 1.25, h0, 1)) return;
+  for (let r = 0.5; r <= 8; r += 0.5) {
+    for (let a = 0; a < 16; a++) {
+      const th = (a / 16) * TAU;
+      const tx = tr.x + Math.cos(th) * r, tz = tr.z + Math.sin(th) * r;
+      const th0 = W.M.h(tx, tz);
+      if (W.M.can(tx, tz, 1.25, th0, 1)) { tr.x = tx; tr.z = tz; tr.y = th0; return; }
+    }
+  }
+}
 Sim.spawnTruck = function (x, z, ang) {
   let s = W.M.truckSpawn;
-  if (x == null && W.mode === 'poacher' && W.dealer) s = { x: W.dealer.x + 4, z: W.dealer.z + 1, ang: Math.PI };
+  if (x == null && W.mode === 'poacher' && W.dealer) s = { x: W.dealer.x, z: W.dealer.z + 6, ang: 0 };
   W.truck = { x: x != null ? x : s.x, z: z != null ? z : s.z, ang: ang != null ? ang : s.ang, speed: 0, seats: [null, null, null], cargo: [], handbrake: false };
+  snapTruckClear(W.truck);
+  W.truck.y = W.M.h(W.truck.x, W.truck.z);
 };
 function spawnAnimal(sp, x, z, extra) {
   const def = GB.SPECIES[sp];
@@ -491,8 +506,13 @@ function driveTick(dt) {
     tr.speed += th * (th > 0 ? 18 : 26) * dt;
     tr.speed -= tr.speed * (inp.hb ? 3.2 : 0.55) * dt;
     tr.speed = clamp(tr.speed, -maxS * 0.4, maxS);
-    if (Math.abs(tr.speed) > 0.4) tr.ang += st * (2 + (u.engine || 0) * 0.3) * dt * clamp(tr.speed / 5, -1, 1);
+    if (Math.abs(tr.speed) > 0.25 || Math.abs(th) > 0.1) {
+      const dir = tr.speed < -0.1 || (Math.abs(tr.speed) <= 0.25 && th < -0.1) ? -1 : 1;
+      const turnRate = Math.max(0.45, Math.min(1, Math.abs(tr.speed) / 4));
+      tr.ang += st * (2 + (u.engine || 0) * 0.3) * dt * dir * turnRate;
+    }
   } else tr.speed -= tr.speed * 0.9 * dt;
+  snapTruckClear(tr);
   const nx = tr.x + Math.sin(tr.ang) * tr.speed * dt, nz = tr.z + Math.cos(tr.ang) * tr.speed * dt;
   const h = W.M.h(tr.x, tr.z);
   if (W.M.can(nx, tr.z, 1.1, h, 1)) tr.x = nx; else tr.speed *= 0.4;

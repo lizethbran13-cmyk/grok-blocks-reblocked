@@ -174,8 +174,8 @@ function buildCamp() {
   m.props.push({ k: 'zsign', x: -3.6, z: 28.2, t: 'PET CORNER', c: '#ff7ab8' }, { k: 'zsign', x: -9, z: 28.4, t: "TORTY'S HABITAT", c: '#5ad27a' }, { k: 'zsign', x: 6.5, z: 28.4, t: "CANDY'S YARD", c: '#ff4fa0' }, { k: 'zsign', x: 17, z: 28.4, t: 'RAT PALACE', c: '#7eb6e0' });
   m.npcs = [{ x: -3, z: 32.8, ang: 0, color: 0xe25b4a, name: 'Visitor Maya', line: 'I came all the way from Pup Town to see Torty! Did you know Torty\u2019s real name is Martina?' }, { x: 2.2, z: 41.2, ang: Math.PI, color: 0x9a5ad2, name: 'Visitor Leo', line: 'Candy fetched my hat three times. Best ranger camp ever!' }];
   m.pets = [{ id: 'torty', x: -12, z: 38, ang: 0.6 }, { id: 'candy', x: 8.5, z: 36, ang: -0.4 }, { id: 'luna', x: 16.5, z: 33, ang: 0.2 }, { id: 'pirat', x: 19.8, z: 33, ang: -0.5 }, { id: 'snowie', x: 16.2, z: 41.5, ang: 1.2 }];
-  [[-6, 4], [6, 4], [-6, -8], [6, -8], [-2, 30], [2, 44], [-20, -8], [20, -8], [-24, 47], [24, 47]].forEach((p) => { m.props.push({ k: 'lamp', x: p[0] + 0.5, z: p[1] + 0.5 }); solidRect(m, p[0], p[1], p[0], p[1], 1); });
-  [[-4, 6, 0], [4, 6, 0], [-5, -6, Math.PI], [5, -6, Math.PI]].forEach((p) => { m.props.push({ k: 'bench', x: p[0], z: p[1], rot: p[2] }); });
+  [[-6, 4], [9, 4], [-6, -8], [6, -8], [-2, 30], [2, 44], [-20, -8], [20, -8], [-24, 47], [24, 47]].forEach((p) => { m.props.push({ k: 'lamp', x: p[0] + 0.5, z: p[1] + 0.5 }); solidRect(m, p[0], p[1], p[0], p[1], 1); });
+  [[-4, 6, 0], [9, 6, 0], [-5, -6, Math.PI], [5, -6, Math.PI]].forEach((p) => { m.props.push({ k: 'bench', x: p[0], z: p[1], rot: p[2] }); });
   [[-17, -8], [17, -8], [-8, 15], [8, 15], [-18, 30.5], [18, 30.5]].forEach((p) => { if (Math.abs(p[0]) > 14 && p[1] > 29) return; m.props.push({ k: 'flowerbed', x: p[0], z: p[1] }); });
   // sanctuaries (fenced, with a gap facing camp)
   const S1 = { id: 'sun', name: 'Sunlands Sanctuary', x0: -51, x1: -24, z0: -6, z1: 30, gate: 'e', habitat: ['savanna', 'jungle', 'desert'], color: 0xf0c24b };
@@ -209,7 +209,7 @@ function buildCamp() {
     addProp(m, { k: 'tree', x: Math.floor(x) + 0.5, z: Math.floor(z) + 0.5, s: 0.8 + r() * 0.5 }, 0);
   }
   m.spawn = { x: 0, z: 4, ang: Math.PI };
-  m.truckSpawn = { x: 5, z: 6, ang: Math.PI };
+  m.truckSpawn = { x: 4.5, z: 3.5, ang: Math.PI };
   m.biome = 'camp';
   return m;
 }
